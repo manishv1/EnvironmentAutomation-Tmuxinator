@@ -1,0 +1,43 @@
+
+https://collectiveidea.com/blog/archives/2017/03/27/using-tmuxinator-to-automate-your-environment
+Tmuxinator files are stored at 
+~/.config/tmuxinator
+
+
+#Sample Script 
+
+
+# ~/.tmuxinator/monitor.yml
+
+name: monitor
+root: ~/
+
+windows:
+  - status_things:
+      layout: main-horizontal
+      panes:
+        - top
+        - uptime
+        - whoami
+  - io_things:
+      layout: tiled
+      panes:
+        - lsof
+        - iostat -w 10
+        - netstat
+        - vim
+  - more_things:
+      layout: main-vertical
+      panes:
+        - is_my_machine_alive:
+          - ping localhost
+        - run_several_commands:
+          - cd /
+          - cd var
+          - cd log
+          - ls
+This example script is quite silly, but you should be able to understand the general idea. The structure is in a simple indented yaml format, so updating it is straightforward.
+
+The script defines a name and an initial root directory. (Adjusting the root can be useful if most of your commands start from the base of a project.) It then goes on to define three windows named status_things, io_things, and more_things. You can rename these to whatever you’d like.
+
+Within each window I set the layout to either main-horizontal, tiled, or main-vertical. (even-vertical and even-horizontal are also options as defined in the tmux main page.) Next, we define the panes that get created inside each window using the layout. Under each pane you then give the command to execute (e.g. like top). If you need to execute many commands you can define another grouping here. (e.g. like run_several_commands)
